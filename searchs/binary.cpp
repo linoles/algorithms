@@ -29,7 +29,7 @@ int binary_search(vector<int> &nums, int query) {
 }
 
 int main() {
-  // Проверка работы алгоритма вводом числа
+  // Проверка работы алгоритма вводом
   int n; // Кол-во чисел в массиве
   scanf("%d\n", &n);
 
