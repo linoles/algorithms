@@ -1,5 +1,6 @@
 #include <vector>
 #include <iostream>
+#include <algorithm>
 #include <bits/stdc++.h>
 using namespace std;
 
@@ -31,6 +32,8 @@ int main()
   printf("\nFirst item: %d", nums.at(0));
   nums[2] = 5;
   nums[4] = -1;
+  swap(nums[1], nums[3]); // Свап элементов местами
+  // nums.assign(0); // Заменяет всё на нули
   // printf("\nItem: %d", nums[11]); // Может вернуть мусор из кеша или Assertion '__n < this->size()' failed.
   // printf("\nItem: %d", nums.at(11)); // Возвращает out_of_range, но медленнее
 
@@ -75,8 +78,19 @@ int main()
   cout << (a != b); // false
   cout << (a != c); // true
 
-  cout << (a < c); // true (Сравнивает последовательно каждый элемент, 3 < 4 => a < c)
-  cout << (a > d); // false
+  cout << (a < c);           // true (Сравнивает последовательно каждый элемент, 3 < 4 => a < c)
+  cout << (a > d) << "\n\n"; // false
+
+  // Сортировка из C++ STL
+  sort(nums.begin(), nums.end(), [](const int a, const int b)
+       {
+         return b > a; // a > b - в убывающем
+       });
+
+  for (int x : nums)
+  {
+    printf("%d ", x);
+  }
 
   return 0;
 }
