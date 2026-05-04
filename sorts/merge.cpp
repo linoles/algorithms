@@ -51,25 +51,3 @@ vector<int> merge_sort(vector<int> nums) {
 
   return merge(left, right);
 }
-
-int main() {
-  // Проверка работы алгоритма вводом
-  int n; // Кол-во чисел в массиве
-  scanf("%d", &n);
-
-  vector<int> nums; // Начальный массив
-  for (int i = 0; i < n; i++) {
-    int temp;
-    scanf("%d", &temp);
-    nums.push_back(temp);
-  }
-
-  vector<int> res = merge_sort(nums);
-
-  // Вывод результата
-  for (int num : res) {
-    printf("%d ", num);
-  }
-
-  return 0;
-}

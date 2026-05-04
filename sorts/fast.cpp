@@ -29,28 +29,3 @@ vector<int> fast_sort(vector<int> nums) {
   left.insert(left.end(), right.begin(), right.end()); // Добавление к левой части правый массив
   return left;
 }
-
-int main()
-{
-  // Проверка работы алгоритма вводом
-  int n; // Кол-во чисел в массиве
-  scanf("%d", &n);
-
-  vector<int> nums; // Начальный массив
-  for (int i = 0; i < n; i++)
-  {
-    int temp;
-    scanf("%d", &temp);
-    nums.push_back(temp);
-  }
-
-  vector<int> res = fast_sort(nums);
-
-  // Вывод результата
-  for (int num : res)
-  {
-    printf("%d ", num);
-  }
-
-  return 0;
-}
