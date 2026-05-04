@@ -178,7 +178,7 @@ _Примеры:_
 ### Что можно добавить в папку assets/:
 
 - Скриншоты работы алгоритма
-- Схемы (можно нарисовать в (Excalidraw)[https://excalidraw.com/], (draw.io)[https://draw.io])
+- Схемы (можно нарисовать в [Excalidraw](https://excalidraw.com/), [draw.io](https://draw.io))
 - Таблицы сравнения производительности
 
 ### Как добавлять ссылки в коде (в блоке @details):
