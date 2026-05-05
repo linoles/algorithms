@@ -2,12 +2,11 @@
 #include <vector>
 #include <algorithm>
 #include <chrono>
-#include <windows.h>
 #include <random>
 
 using namespace std;
 
-// Подключаем ваши сортировки
+// Подключаем сортировки
 #include "../sorts/bubble.cpp"
 #include "../sorts/selection.cpp"
 #include "../sorts/insertion.cpp"
@@ -62,13 +61,9 @@ vector<int> generateRandomArray(int size, int minVal = 0, int maxVal = 10000)
   return arr;
 }
 
-// Универсальная функция тестирования (с реальными expected)
 void testSort(const string &name, vector<int> (*sortFunc)(vector<int>))
 {
-  SetConsoleOutputCP(CP_UTF8);
-  SetConsoleCP(CP_UTF8);
-
-  cout << "\n📊 Тестируем: " << name << endl;
+  cout << "\n[TEST] " << name << endl;
   cout << "----------------------------------------" << endl;
 
   // Тест 1: Пустой массив
@@ -77,8 +72,8 @@ void testSort(const string &name, vector<int> (*sortFunc)(vector<int>))
     vector<int> expected = {};
     vector<int> result = sortFunc(arr);
 
-    cout << "  Тест: Пустой массив (" << name << ")" << endl;
-    cout << "  Результат: " << (result == expected ? "✅" : "❌") << endl;
+    cout << "  Test: Empty array (" << name << ")" << endl;
+    cout << "  Result: " << (result == expected ? "PASS" : "FAIL") << endl;
     cout << endl;
   }
 
@@ -88,9 +83,9 @@ void testSort(const string &name, vector<int> (*sortFunc)(vector<int>))
     vector<int> expected = {42};
     vector<int> result = sortFunc(arr);
 
-    cout << "  Тест: Один элемент (" << name << ")" << endl;
-    printArray(result, "Результат");
-    cout << "  Статус: " << (result == expected ? "✅" : "❌") << endl;
+    cout << "  Test: Single element (" << name << ")" << endl;
+    printArray(result, "Result");
+    cout << "  Status: " << (result == expected ? "PASS" : "FAIL") << endl;
     cout << endl;
   }
 
@@ -100,9 +95,9 @@ void testSort(const string &name, vector<int> (*sortFunc)(vector<int>))
     vector<int> expected = {1, 2, 3, 4, 5};
     vector<int> result = sortFunc(arr);
 
-    cout << "  Тест: Уже отсортированный (" << name << ")" << endl;
-    printArray(result, "Результат");
-    cout << "  Статус: " << (result == expected ? "✅" : "❌") << endl;
+    cout << "  Test: Already sorted (" << name << ")" << endl;
+    printArray(result, "Result");
+    cout << "  Status: " << (result == expected ? "PASS" : "FAIL") << endl;
     cout << endl;
   }
 
@@ -111,13 +106,13 @@ void testSort(const string &name, vector<int> (*sortFunc)(vector<int>))
     vector<int> arr = {5, 4, 3, 2, 1};
     vector<int> expected = {1, 2, 3, 4, 5};
 
-    cout << "  Тест: Обратный порядок (" << name << ")" << endl;
-    printArray(arr, "Исходный");
+    cout << "  Test: Reverse order (" << name << ")" << endl;
+    printArray(arr, "Input");
     vector<int> result = sortFunc(arr);
-    printArray(result, "Результат");
-    cout << "  Ожидалось: ";
+    printArray(result, "Result");
+    cout << "  Expected: ";
     printArray(expected);
-    cout << "  Статус: " << (result == expected ? "✅" : "❌") << endl;
+    cout << "  Status: " << (result == expected ? "PASS" : "FAIL") << endl;
     cout << endl;
   }
 
@@ -127,13 +122,13 @@ void testSort(const string &name, vector<int> (*sortFunc)(vector<int>))
     vector<int> expected = arr;
     sort(expected.begin(), expected.end());
 
-    cout << "  Тест: Случайный массив (" << name << ")" << endl;
-    printArray(arr, "Исходный");
+    cout << "  Test: Random array (" << name << ")" << endl;
+    printArray(arr, "Input");
     vector<int> result = sortFunc(arr);
-    printArray(result, "Результат");
-    cout << "  Ожидалось: ";
+    printArray(result, "Result");
+    cout << "  Expected: ";
     printArray(expected);
-    cout << "  Статус: " << (result == expected ? "✅" : "❌") << endl;
+    cout << "  Status: " << (result == expected ? "PASS" : "FAIL") << endl;
     cout << endl;
   }
 
@@ -143,13 +138,13 @@ void testSort(const string &name, vector<int> (*sortFunc)(vector<int>))
     vector<int> expected = arr;
     sort(expected.begin(), expected.end());
 
-    cout << "  Тест: Массив с дубликатами (" << name << ")" << endl;
-    printArray(arr, "Исходный");
+    cout << "  Test: Array with duplicates (" << name << ")" << endl;
+    printArray(arr, "Input");
     vector<int> result = sortFunc(arr);
-    printArray(result, "Результат");
-    cout << "  Ожидалось: ";
+    printArray(result, "Result");
+    cout << "  Expected: ";
     printArray(expected);
-    cout << "  Статус: " << (result == expected ? "✅" : "❌") << endl;
+    cout << "  Status: " << (result == expected ? "PASS" : "FAIL") << endl;
     cout << endl;
   }
 
@@ -159,13 +154,13 @@ void testSort(const string &name, vector<int> (*sortFunc)(vector<int>))
     vector<int> expected = arr;
     sort(expected.begin(), expected.end());
 
-    cout << "  Тест: Отрицательные числа (" << name << ")" << endl;
-    printArray(arr, "Исходный");
+    cout << "  Test: Negative numbers (" << name << ")" << endl;
+    printArray(arr, "Input");
     vector<int> result = sortFunc(arr);
-    printArray(result, "Результат");
-    cout << "  Ожидалось: ";
+    printArray(result, "Result");
+    cout << "  Expected: ";
     printArray(expected);
-    cout << "  Статус: " << (result == expected ? "✅" : "❌") << endl;
+    cout << "  Status: " << (result == expected ? "PASS" : "FAIL") << endl;
     cout << endl;
   }
 }
@@ -175,7 +170,7 @@ void benchmarkSort(const string &name, vector<int> (*sortFunc)(vector<int>), int
 {
   vector<int> arr = generateRandomArray(size);
 
-  cout << "  " << name << " на " << size << " элементах: ";
+  cout << "  " << name << " on " << size << " elements: ";
 
   auto start = chrono::high_resolution_clock::now();
   vector<int> result = sortFunc(arr);
@@ -183,16 +178,15 @@ void benchmarkSort(const string &name, vector<int> (*sortFunc)(vector<int>), int
 
   auto duration = chrono::duration_cast<chrono::microseconds>(end - start);
 
-  // Проверяем, что массив действительно отсортирован
   bool sorted = isSorted(result);
 
   if (sorted)
   {
-    cout << (duration.count() / 1000.0) << " ms ✅" << endl;
+    cout << (duration.count() / 1000.0) << " ms [OK]" << endl;
   }
   else
   {
-    cout << "❌ НЕ ОТСОРТИРОВАНО!" << endl;
+    cout << "[FAIL] NOT SORTED!" << endl;
   }
 }
 
@@ -200,21 +194,21 @@ void benchmarkSort(const string &name, vector<int> (*sortFunc)(vector<int>), int
 void benchmarkAllSorts(int sizes[], int numSizes)
 {
   cout << "\n========================================" << endl;
-  cout << "    ⚡ ЗАМЕРЫ ПРОИЗВОДИТЕЛЬНОСТИ" << endl;
+  cout << "        PERFORMANCE BENCHMARK" << endl;
   cout << "========================================" << endl;
 
   vector<pair<string, vector<int> (*)(vector<int>)>> sorts = {
-      {"Пузырьком", bubble_sort},
-      {"Выбором", selection_sort},
-      {"Вставкой", insertion_sort},
-      {"Быстрая", fast_sort},
-      {"Слиянием", merge_sort},
-      {"Подсчётом", counting_sort}};
+      {"Bubble", bubble_sort},
+      {"Selection", selection_sort},
+      {"Insertion", insertion_sort},
+      {"Quick", fast_sort},
+      {"Merge", merge_sort},
+      {"Counting", counting_sort}};
 
   for (int s = 0; s < numSizes; s++)
   {
     int size = sizes[s];
-    cout << "\n📊 Размер массива: " << size << endl;
+    cout << "\n[SIZE] " << size << endl;
     cout << "----------------------------------------" << endl;
 
     for (const auto &sort : sorts)
@@ -226,25 +220,23 @@ void benchmarkAllSorts(int sizes[], int numSizes)
 
 int main()
 {
-  SetConsoleOutputCP(CP_UTF8);
-  SetConsoleCP(CP_UTF8);
-
   cout << "========================================" << endl;
-  cout << "    🧪 ТЕСТИРОВАНИЕ АЛГОРИТМОВ СОРТИРОВКИ" << endl;
+  cout << "     SORTING ALGORITHMS TEST SUITE" << endl;
   cout << "========================================" << endl;
 
-  // Тестируем каждую сортировку
-  testSort("Пузырьком", bubble_sort);
-  testSort("Выбором", selection_sort);
-  testSort("Вставкой", insertion_sort);
-  testSort("Быстрая", fast_sort);
-  testSort("Слиянием", merge_sort);
-  testSort("Подсчётом", counting_sort);
+  testSort("Bubble", bubble_sort);
+  testSort("Selection", selection_sort);
+  testSort("Insertion", insertion_sort);
+  testSort("Quick", fast_sort);
+  testSort("Merge", merge_sort);
+  testSort("Counting", counting_sort);
 
-  // Замеры производительности для разных размеров
   int sizes[] = {100, 500, 1000, 5000, 10000};
   int numSizes = sizeof(sizes) / sizeof(sizes[0]);
   benchmarkAllSorts(sizes, numSizes);
 
   return 0;
 }
+
+// Напомню, что версия быстрой сортировки, представленная тут, не самая быстрая, поэтому в некоторых местах сортировка слиянием может быть быстрее
+// Да, сортировка подсчётом может быть быстрая, но она не работает с double (float) и медленна с большими интервалами
