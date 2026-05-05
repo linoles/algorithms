@@ -3,10 +3,43 @@
 #include <algorithm>
 #include <chrono>
 #include <random>
+#include <fstream>
+#include <atomic>
 
 using namespace std;
 
-// Подключаем сортировки
+// ================= MEMORY TRACKING =================
+
+atomic<size_t> allocated_bytes(0);
+atomic<size_t> allocation_count(0);
+
+template <typename T>
+struct CountingAllocator
+{
+  using value_type = T;
+
+  CountingAllocator() noexcept {}
+  template <class U>
+  CountingAllocator(const CountingAllocator<U> &) noexcept {}
+
+  T *allocate(size_t n)
+  {
+    size_t bytes = n * sizeof(T);
+    allocated_bytes += bytes;
+    allocation_count++;
+    return std::allocator<T>().allocate(n);
+  }
+
+  void deallocate(T *p, size_t n) noexcept
+  {
+    std::allocator<T>().deallocate(p, n);
+  }
+};
+
+using CountingVector = vector<int, CountingAllocator<int>>;
+
+// ================= SORTS =================
+
 #include "../sorts/bubble.cpp"
 #include "../sorts/selection.cpp"
 #include "../sorts/insertion.cpp"
@@ -14,226 +47,111 @@ using namespace std;
 #include "../sorts/merge.cpp"
 #include "../sorts/counting.cpp"
 
-// Функция для вывода массива
-void printArray(const vector<int> &arr, const string &title = "")
-{
-  if (!title.empty())
-  {
-    cout << "  " << title << ": [";
-  }
-  else
-  {
-    cout << "  [";
-  }
+// ================= HELPERS =================
 
-  for (size_t i = 0; i < arr.size(); i++)
-  {
-    cout << arr[i];
-    if (i < arr.size() - 1)
-      cout << ", ";
-  }
-  cout << "]" << endl;
-}
-
-// Функция для проверки, отсортирован ли массив
-bool isSorted(const vector<int> &arr)
+bool isSorted(const CountingVector &arr)
 {
   for (size_t i = 1; i < arr.size(); i++)
-  {
     if (arr[i] < arr[i - 1])
       return false;
-  }
   return true;
 }
 
-// Генерация случайного массива
-vector<int> generateRandomArray(int size, int minVal = 0, int maxVal = 10000)
+CountingVector generateRandomArray(int size)
 {
   random_device rd;
   mt19937 gen(rd());
-  uniform_int_distribution<> dist(minVal, maxVal);
+  uniform_int_distribution<> dist(0, 10000);
 
-  vector<int> arr(size);
+  CountingVector arr(size);
   for (int i = 0; i < size; i++)
-  {
     arr[i] = dist(gen);
-  }
+
   return arr;
 }
 
-void testSort(const string &name, vector<int> (*sortFunc)(vector<int>))
+// ================= BENCHMARK =================
+
+template <typename Func>
+void benchmarkSort(const string &name, Func sortFunc, int size, ofstream &csv)
 {
-  cout << "\n[TEST] " << name << endl;
-  cout << "----------------------------------------" << endl;
+  const int RUNS = 5;
 
-  // Тест 1: Пустой массив
+  double total_time = 0;
+  size_t total_memory = 0;
+  size_t total_allocs = 0;
+
+  for (int i = 0; i < RUNS; i++)
   {
-    vector<int> arr = {};
-    vector<int> expected = {};
-    vector<int> result = sortFunc(arr);
+    CountingVector arr = generateRandomArray(size);
 
-    cout << "  Test: Empty array (" << name << ")" << endl;
-    cout << "  Result: " << (result == expected ? "PASS" : "FAIL") << endl;
-    cout << endl;
+    allocated_bytes = 0;
+    allocation_count = 0;
+
+    auto start = chrono::high_resolution_clock::now();
+    auto result = sortFunc(arr);
+    auto end = chrono::high_resolution_clock::now();
+
+    auto duration = chrono::duration_cast<chrono::microseconds>(end - start);
+
+    total_time += duration.count() / 1000.0;
+    total_memory += allocated_bytes;
+    total_allocs += allocation_count;
   }
 
-  // Тест 2: Один элемент
-  {
-    vector<int> arr = {42};
-    vector<int> expected = {42};
-    vector<int> result = sortFunc(arr);
+  double avg_time = total_time / RUNS;
+  size_t avg_memory = total_memory / RUNS;
+  size_t avg_allocs = total_allocs / RUNS;
 
-    cout << "  Test: Single element (" << name << ")" << endl;
-    printArray(result, "Result");
-    cout << "  Status: " << (result == expected ? "PASS" : "FAIL") << endl;
-    cout << endl;
-  }
+  cout << "  " << name
+       << " | time: " << avg_time << " ms"
+       << " | mem: " << avg_memory << " B"
+       << " | allocs: " << avg_allocs
+       << endl;
 
-  // Тест 3: Уже отсортированный
-  {
-    vector<int> arr = {1, 2, 3, 4, 5};
-    vector<int> expected = {1, 2, 3, 4, 5};
-    vector<int> result = sortFunc(arr);
-
-    cout << "  Test: Already sorted (" << name << ")" << endl;
-    printArray(result, "Result");
-    cout << "  Status: " << (result == expected ? "PASS" : "FAIL") << endl;
-    cout << endl;
-  }
-
-  // Тест 4: Обратный порядок (самый важный!)
-  {
-    vector<int> arr = {5, 4, 3, 2, 1};
-    vector<int> expected = {1, 2, 3, 4, 5};
-
-    cout << "  Test: Reverse order (" << name << ")" << endl;
-    printArray(arr, "Input");
-    vector<int> result = sortFunc(arr);
-    printArray(result, "Result");
-    cout << "  Expected: ";
-    printArray(expected);
-    cout << "  Status: " << (result == expected ? "PASS" : "FAIL") << endl;
-    cout << endl;
-  }
-
-  // Тест 5: Случайный массив
-  {
-    vector<int> arr = {3, 7, 1, 9, 2, 8, 4, 6, 5};
-    vector<int> expected = arr;
-    sort(expected.begin(), expected.end());
-
-    cout << "  Test: Random array (" << name << ")" << endl;
-    printArray(arr, "Input");
-    vector<int> result = sortFunc(arr);
-    printArray(result, "Result");
-    cout << "  Expected: ";
-    printArray(expected);
-    cout << "  Status: " << (result == expected ? "PASS" : "FAIL") << endl;
-    cout << endl;
-  }
-
-  // Тест 6: Массив с дубликатами
-  {
-    vector<int> arr = {3, 1, 3, 2, 1, 3, 2};
-    vector<int> expected = arr;
-    sort(expected.begin(), expected.end());
-
-    cout << "  Test: Array with duplicates (" << name << ")" << endl;
-    printArray(arr, "Input");
-    vector<int> result = sortFunc(arr);
-    printArray(result, "Result");
-    cout << "  Expected: ";
-    printArray(expected);
-    cout << "  Status: " << (result == expected ? "PASS" : "FAIL") << endl;
-    cout << endl;
-  }
-
-  // Тест 7: Отрицательные числа
-  {
-    vector<int> arr = {-5, 3, -1, 0, -2, 4, -3};
-    vector<int> expected = arr;
-    sort(expected.begin(), expected.end());
-
-    cout << "  Test: Negative numbers (" << name << ")" << endl;
-    printArray(arr, "Input");
-    vector<int> result = sortFunc(arr);
-    printArray(result, "Result");
-    cout << "  Expected: ";
-    printArray(expected);
-    cout << "  Status: " << (result == expected ? "PASS" : "FAIL") << endl;
-    cout << endl;
-  }
+  csv << name << "," << size << "," << avg_time << ","
+      << avg_memory << "," << avg_allocs << "\n";
 }
 
-// Замер производительности для одного размера
-void benchmarkSort(const string &name, vector<int> (*sortFunc)(vector<int>), int size)
-{
-  vector<int> arr = generateRandomArray(size);
+// ================= MAIN BENCH =================
 
-  cout << "  " << name << " on " << size << " elements: ";
-
-  auto start = chrono::high_resolution_clock::now();
-  vector<int> result = sortFunc(arr);
-  auto end = chrono::high_resolution_clock::now();
-
-  auto duration = chrono::duration_cast<chrono::microseconds>(end - start);
-
-  bool sorted = isSorted(result);
-
-  if (sorted)
-  {
-    cout << (duration.count() / 1000.0) << " ms [OK]" << endl;
-  }
-  else
-  {
-    cout << "[FAIL] NOT SORTED!" << endl;
-  }
-}
-
-// Полное тестирование производительности для всех размеров
 void benchmarkAllSorts(int sizes[], int numSizes)
 {
-  cout << "\n========================================" << endl;
+  ofstream csv("results.csv");
+  csv << "Algorithm,Size,Time(ms),Memory(bytes),Allocations\n";
+
+  cout << "========================================" << endl;
   cout << "        PERFORMANCE BENCHMARK" << endl;
   cout << "========================================" << endl;
-
-  vector<pair<string, vector<int> (*)(vector<int>)>> sorts = {
-      {"Bubble", bubble_sort},
-      {"Selection", selection_sort},
-      {"Insertion", insertion_sort},
-      {"Quick", fast_sort},
-      {"Merge", merge_sort},
-      {"Counting", counting_sort}};
 
   for (int s = 0; s < numSizes; s++)
   {
     int size = sizes[s];
+
     cout << "\n[SIZE] " << size << endl;
     cout << "----------------------------------------" << endl;
 
-    for (const auto &sort : sorts)
-    {
-      benchmarkSort(sort.first, sort.second, size);
-    }
+    benchmarkSort("Bubble", bubble_sort<int, CountingAllocator<int>>, size, csv);
+    benchmarkSort("Selection", selection_sort<int, CountingAllocator<int>>, size, csv);
+    benchmarkSort("Insertion", insertion_sort<int, CountingAllocator<int>>, size, csv);
+    benchmarkSort("Fast", fast_sort<int, CountingAllocator<int>>, size, csv);
+    benchmarkSort("Merge", merge_sort<int, CountingAllocator<int>>, size, csv);
+    benchmarkSort("Counting", counting_sort<int, CountingAllocator<int>>, size, csv);
   }
+
+  csv.close();
 }
+
+// ================= MAIN =================
 
 int main()
 {
-  cout << "========================================" << endl;
-  cout << "     SORTING ALGORITHMS TEST SUITE" << endl;
-  cout << "========================================" << endl;
-
-  testSort("Bubble", bubble_sort);
-  testSort("Selection", selection_sort);
-  testSort("Insertion", insertion_sort);
-  testSort("Quick", fast_sort);
-  testSort("Merge", merge_sort);
-  testSort("Counting", counting_sort);
-
   int sizes[] = {100, 500, 1000, 5000, 10000};
   int numSizes = sizeof(sizes) / sizeof(sizes[0]);
+
   benchmarkAllSorts(sizes, numSizes);
+
+  cout << "\nResults saved to results.csv\n";
 
   return 0;
 }

@@ -9,34 +9,46 @@ using namespace std;
   * На вход подаётся массив
   * Возвращается отсортированный массив
   * Скорость O(n + k), память O(n)
+
+  Тут просто vector<int> func(vector<int>) {}
+  Я использую Alloc для тестов /tests/
 */
-vector<int> counting_sort(vector<int> nums) {
-  if (size(nums) <= 1) return nums;
+template <typename T, typename Alloc>
+vector<T, Alloc> counting_sort(vector<T, Alloc> nums)
+{
+  if (size(nums) <= 1)
+    return nums;
 
   // Узнаём максимум и минимум
   int max = nums[0];
   int min = nums[0];
-  for (int x : nums) {
-    if (x > max) max = x;
-    if (x < min) min = x;
+  for (int x : nums)
+  {
+    if (x > max)
+      max = x;
+    if (x < min)
+      min = x;
   }
   int range = max - min + 1; // Размах массива
 
   vector<int> counts(range, 0); // Массив вхождений
-  vector<int> res(size(nums));
+  vector<T, Alloc> res(size(nums));
 
   // Заполнение массива вхождений
-  for (int x : nums) {
+  for (int x : nums)
+  {
     counts[x - min]++;
   }
 
   // Окончательное заполнение
-  for (int i = 1; i < range; i++) {
+  for (int i = 1; i < range; i++)
+  {
     counts[i] += counts[i - 1];
   }
 
   // Восстановление массива
-  for (int i = size(nums) - 1; i >= 0; --i) {
+  for (int i = size(nums) - 1; i >= 0; --i)
+  {
     res[counts[nums[i] - min] - 1] = nums[i];
     counts[nums[i] - min]--;
   }
