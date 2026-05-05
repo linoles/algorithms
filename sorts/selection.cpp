@@ -4,7 +4,7 @@
 using namespace std;
 
 template <typename T, typename Alloc>
-int find_smallest(vector<T, Alloc> nums)
+int find_smallest(vector<T, Alloc> &nums)
 {
   int smallest = nums[0];
   int smallest_ind = 0;
@@ -26,7 +26,7 @@ int find_smallest(vector<T, Alloc> nums)
 
   * На вход подаётся массив
   * Возвращается отсортированный массив
-  * Скорость O(n²), память O(n)
+  * Скорость O(n²), память O(1)
 
   Тут просто vector<int> func(vector<int>) {}
   Я использую Alloc для тестов /tests/

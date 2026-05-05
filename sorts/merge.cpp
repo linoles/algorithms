@@ -5,7 +5,7 @@ using namespace std;
 
 // Функция объединения массивов
 template <typename T, typename Alloc>
-vector<T, Alloc> merge(vector<T, Alloc> left, vector<T, Alloc> right)
+vector<T, Alloc> merge(vector<T, Alloc> &left, vector<T, Alloc> &right)
 {
   vector<T, Alloc> res;
   int i = 0;
@@ -57,7 +57,7 @@ vector<T, Alloc> merge_sort(vector<T, Alloc> nums)
   if (size(nums) <= 1)
     return nums; // Базовый случай
 
-  int mid = floor(size(nums) / 2);                    // Индекс числа по центру
+  int mid = floor(size(nums) / 2);                         // Индекс числа по центру
   vector<T, Alloc> left(nums.begin(), nums.begin() + mid); // Левая часть
   vector<T, Alloc> right(nums.begin() + mid, nums.end());  // Правая часть
 

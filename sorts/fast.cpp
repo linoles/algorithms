@@ -8,34 +8,53 @@ using namespace std;
 
   * На вход подаётся массив
   * Возвращается отсортированный массив
-  * Скорость O(n * log n), память O(n)
+  * Скорость O(n * log n), память O(log n)
 
   Тут просто vector<int> func(vector<int>) {}
   Я использую Alloc для тестов /tests/
 */
 template <typename T, typename Alloc>
+void quick_sort(vector<T, Alloc> &nums, int low, int high)
+{
+  while (low < high)
+  {
+    T pivot = nums[low + rand() % (high - low + 1)]; // pivot - вариация со случайным элементом
+
+    int i = low;
+    int j = high;
+
+    while (i <= j)
+    {
+      while (nums[i] < pivot)
+        i++;
+      while (nums[j] > pivot)
+        j--;
+
+      if (i <= j)
+      {
+        swap(nums[i], nums[j]);
+        i++;
+        j--;
+      }
+    }
+
+    // Рекурсия
+    if (j - low < high - i)
+    {
+      quick_sort(nums, low, j);
+      low = i;
+    }
+    else
+    {
+      quick_sort(nums, i, high);
+      high = j;
+    }
+  }
+}
+
+template <typename T, typename Alloc>
 vector<T, Alloc> fast_sort(vector<T, Alloc> nums)
 {
-  if (size(nums) <= 1)
-    return nums; // Базовый случай
-
-  int pivot = nums[size(nums) / 2]; // pivot - вариация с средним элементом
-  vector<T, Alloc> left, middle, right;
-
-  for (int x : nums)
-  { // Распределение чисел из начального массива
-    if (x < pivot)
-      left.push_back(x);
-    else if (x > pivot)
-      right.push_back(x);
-    else
-      middle.push_back(x);
-  }
-
-  left = fast_sort(left);   // Рекурсивный вызов
-  right = fast_sort(right); // Рекурсивный вызов
-
-  left.insert(left.end(), middle.begin(), middle.end()); // Добавление к левой части middle-массив
-  left.insert(left.end(), right.begin(), right.end());   // Добавление к левой части правый массив
-  return left;
+  quick_sort(nums, 0, nums.size() - 1);
+  return nums;
 }

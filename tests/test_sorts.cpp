@@ -46,6 +46,7 @@ using CountingVector = vector<int, CountingAllocator<int>>;
 #include "../sorts/fast.cpp"
 #include "../sorts/merge.cpp"
 #include "../sorts/counting.cpp"
+#include "../sorts/heap.cpp"
 
 // ================= HELPERS =================
 
@@ -137,6 +138,7 @@ void benchmarkAllSorts(int sizes[], int numSizes)
     benchmarkSort("Fast", fast_sort<int, CountingAllocator<int>>, size, csv);
     benchmarkSort("Merge", merge_sort<int, CountingAllocator<int>>, size, csv);
     benchmarkSort("Counting", counting_sort<int, CountingAllocator<int>>, size, csv);
+    benchmarkSort("Heap", heap_sort<int, CountingAllocator<int>>, size, csv);
   }
 
   csv.close();
