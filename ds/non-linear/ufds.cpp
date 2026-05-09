@@ -53,4 +53,6 @@ int main()
   cout << findSet(0, p1) << " " << findSet(1, p1) << " " << findSet(2, p1) << " " << findSet(3, p1) << " " << findSet(4, p1) << " " << findSet(5, p1) << "\n";
   cout << ranks[0] << " " << ranks[1] << " " << ranks[2] << " " << ranks[3] << " " << ranks[4] << " " << ranks[5] << "\n";
   cout << isSameSet(2, 3, p1) << " " << isSameSet(0, 5, p1);
+
+  return 0;
 }
