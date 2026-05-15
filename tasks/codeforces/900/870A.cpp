@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Codeforces 870A - Поиск красивых чисел, O()
+// Codeforces 870A (900) - Поиск красивых чисел, O(n²)
 int main()
 {
   int n, m, min_res = 10;
