@@ -3,18 +3,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Функция нахождения числа различных символов в строке
-int f(string str)
-{
-  unordered_set<char> letters; // Сет - массив уникальных элементов
-  for (char c : str)
-  {
-    letters.insert(c); // Не сохранит повторений
-  }
-  return letters.size();
-}
-
-// Codeforces 1791D - Непересекающееся разделение, O(n²)
+// Codeforces 1791D - Непересекающееся разделение, O(n)
 int main()
 {
   int t, n; // 1 ≤ t ≤ 10^4, 2 ≤ n ≤ 2*10^5
@@ -22,20 +11,40 @@ int main()
   while (t--)
   {
     scanf("%d", &n);
-    char temp_s[n];
-    scanf("%s", &temp_s);
-    string s = temp_s; // std::string для использования функции substr
+    char s[n + 1];
+    scanf("%s", s);
 
-    // Подбираем строки - циклично разбираем на разные длины
-    int max_res = 0;
-    for (int i = 1; i < n - 1; i++)
+    int pref[n];  // Это кол-во уникальных символов в s[0...i]
+    int seen = 0; // Битмаска для полной скорости
+                  // Ограничения задачи не заставляют её использовать
+                  // Но для практики полезно, тут также подошёл бы bool[26], неважно
+    for (int i = 0; i < n; i++)
     {
-      int temp = f(s.substr(0, i)) + f(s.substr(i, n - i)); // находим f(a) + f(b)
-      if (temp > max_res)
-        max_res = temp;
+      seen |= (1 << (s[i] - 'a'));        // Ставим единицу в нужном бите
+                                          // s[i] - 'a' превращает char в индекс в алфавите (0...25), т.к. 'a' = индексу первой буквы
+                                          // 1 << (s[i] - 'a') превращает это в двоичное представление, а |= включает нужный бит или оставляет, как есть
+      pref[i] = __builtin_popcount(seen); // Подсчёт единичных бит в числе
     }
 
-    printf("%d\n\n", (max_res == 0) ? 2 : max_res);
+    int suff[n]; // Это кол-во уникальных символов в s[i...n-1]
+    seen = 0;
+    for (int i = n - 1; i >= 0; i--)
+    {
+      seen |= (1 << (s[i] - 'a'));
+      suff[i] = __builtin_popcount(seen);
+    }
+
+    // Подбираем лучшие субстроки
+    int max_res = 0;
+    for (int i = 0; i < n - 1; i++)
+    {
+      int cur_sum = pref[i] + suff[i + 1]; // Кол-во уникальных в первой подстроке (0...i)
+                                           // + кол-во уникальных во второй (i+1...n-1)
+      if (cur_sum > max_res)
+        max_res = cur_sum;
+    }
+
+    printf("%d\n", max_res);
   }
 
   return 0;

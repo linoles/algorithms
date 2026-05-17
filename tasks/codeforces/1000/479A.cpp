@@ -21,10 +21,7 @@ int main()
   else if (c >= a && c >= b)
     res = c * ((b + a > b * a) ? b + a : b * a); // (a + b) * c
 
-  if (res > a * b * c)
-    printf("%d", res);
-  else
-    printf("%d", a * b * c);
+  printf("%d", max(res, max(a * b * c, a + b + c))); // Выбираем наибольший результат
 
   return 0;
 }
