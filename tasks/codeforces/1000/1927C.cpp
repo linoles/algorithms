@@ -33,15 +33,17 @@ int main()
       }
       else if (ab[i] - cur_num == 0)
       {
-        printf("DEBUG (ab[i] - cur_num = 0): i: %d, ab[i]: %d, cur_num: %d, k: %d\n", i, ab[i], cur_num, k);
+        printf("DEBUG BEFORE (ab[i] - cur_num = 0): i: %d, ab[i]: %d, cur_num: %d, k: %d\n", i, ab[i], cur_num, k);
         num_used = 1;
+        printf("DEBUG AFTER (ab[i] - cur_num = 0): i: %d, ab[i]: %d, cur_num: %d, k: %d\n", i, ab[i], cur_num, k);
         continue;
       }
       else if (ab[i] - cur_num == 1 && num_used)
       {
-        printf("DEBUG (ab[i] - cur_num = 1): i: %d, ab[i]: %d, cur_num: %d, k: %d\n", i, ab[i], cur_num, k);
+        printf("DEBUG BEFORE (ab[i] - cur_num = 1): i: %d, ab[i]: %d, cur_num: %d, k: %d\n", i, ab[i], cur_num, k);
         cur_num++;
         num_used = 0;
+        printf("DEBUG AFTER (ab[i] - cur_num = 1): i: %d, ab[i]: %d, cur_num: %d, k: %d\n", i, ab[i], cur_num, k);
       }
       else
       {
