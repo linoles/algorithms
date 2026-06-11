@@ -2,7 +2,9 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Codeforces 1541B (1200) - Приятные пары, O()
+typedef long long ll;
+
+// Codeforces 1541B (1200) - Приятные пары, O(n * log n)
 int main()
 {
   int t, n;
@@ -10,16 +12,25 @@ int main()
   while (t--)
   {
     scanf("%d", &n);
-    int a[n + 1];
-    for (int i = 0; i < n; i++)
-      scanf("%d", &a[i]);
+    ll a[n + 2];
+    for (int i = 1; i <= n; i++)
+      scanf("%lld", &a[i]);
 
-    // Максимальная сумма двух индексов = 2n - 1
-    for (int i = 0; i < n; i++)
-      if (a[i] > 2 * n - 1)
-        a[i] = -1;
-    
-    printf("%c", a[n]);
+    // Перебираем все пары
+    ll ans = 0;
+    for (ll i = 1; i < n; i++)
+    {
+      // Первое возможное j
+      ll j = a[i] - (i % a[i]);
+      if (j <= i)
+        j += ((i - j) / a[i] + 1) * a[i];
+
+      for (; j <= n; j += a[i]) // Лучший шаг
+        if (i < j && i + j == a[i] * a[j])
+          ans++;
+    }
+
+    printf("%lld\n\n", ans);
   }
 
   return 0;
