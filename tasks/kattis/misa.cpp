@@ -2,7 +2,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-// Kattis misa, O()
+// Kattis misa, O(n³)
 int main()
 {
   int r, s;
@@ -11,6 +11,7 @@ int main()
   for (int i = 0; i < r; i++)
     scanf("%s", &places[i]);
 
+  // Проверяем, есть ли пустое место для Мирко
   bool has_empty = 0;
   for (int i = 0; i < r; i++)
     for (int j = 0; j < s; j++)
@@ -20,16 +21,18 @@ int main()
         break;
       }
 
+  // Добавляем Мирко
   if (has_empty)
   {
-    vector<int> shakes(r * s + 1, 0); // Количество рукопожатий по индексу
+    vector<int> shakes(r * s + 1, -1); // Количество рукопожатий по индексу
     int best_i = -1, best_j = -1, best_sum = -1;
     for (int i = 0; i < r; i++)
       for (int j = 0; j < s; j++)
       {
         // i - номер ряда, j - номер столбца
         if (places[i][j] == 'o')
-          continue;
+          continue;     // Если место занято, то не считаем его
+        places[i][j]++; // Чтобы если у всех 0, то не выбралось занятое
 
         // Всё, что слева от места
         if (j > 0)
@@ -71,53 +74,53 @@ int main()
   }
 
   // Теперь считаем кол-во рукопожатий
-  vector<pair<pair<int, int>, pair<int, int>>> res;
+  vector<pair<pair<int, int>, pair<int, int>>> res; // Совершённые рукопожатия
   for (int i = 0; i < r; i++)
     for (int j = 0; j < s; j++)
     {
       // i - номер ряда, j - номер столбца
       if (places[i][j] == '.')
-        continue;
+        continue; // Не считаем пустые места
 
       // Всё, что слева от места
       if (j > 0)
       {
         if (i > 0 && places[i - 1][j - 1] == 'o' &&
-            find(res.begin(), res.end(), make_pair(make_pair(i - 1, j - 1), make_pair(i, j))) == res.end() &&
+            find(res.begin(), res.end(), make_pair(make_pair(i - 1, j - 1), make_pair(i, j))) == res.end() && // Проверка на существование такой пары
             find(res.begin(), res.end(), make_pair(make_pair(i, j), make_pair(i - 1, j - 1))) == res.end())
           res.push_back(make_pair(make_pair(i - 1, j - 1), make_pair(i, j)));
         if (places[i][j - 1] == 'o' &&
-            find(res.begin(), res.end(), make_pair(make_pair(i, j - 1), make_pair(i, j))) == res.end() &&
+            find(res.begin(), res.end(), make_pair(make_pair(i, j - 1), make_pair(i, j))) == res.end() && // Проверка на существование такой пары
             find(res.begin(), res.end(), make_pair(make_pair(i, j), make_pair(i, j - 1))) == res.end())
           res.push_back(make_pair(make_pair(i, j - 1), make_pair(i, j)));
         if (i < r - 1 && places[i + 1][j - 1] == 'o' &&
-            find(res.begin(), res.end(), make_pair(make_pair(i + 1, j - 1), make_pair(i, j))) == res.end() &&
+            find(res.begin(), res.end(), make_pair(make_pair(i + 1, j - 1), make_pair(i, j))) == res.end() && // Проверка на существование такой пары
             find(res.begin(), res.end(), make_pair(make_pair(i, j), make_pair(i + 1, j - 1))) == res.end())
           res.push_back(make_pair(make_pair(i + 1, j - 1), make_pair(i, j)));
       }
       // Сверху
       if (i > 0 && places[i - 1][j] == 'o' &&
-          find(res.begin(), res.end(), make_pair(make_pair(i - 1, j), make_pair(i, j))) == res.end() &&
+          find(res.begin(), res.end(), make_pair(make_pair(i - 1, j), make_pair(i, j))) == res.end() && // Проверка на существование такой пары
           find(res.begin(), res.end(), make_pair(make_pair(i, j), make_pair(i - 1, j))) == res.end())
         res.push_back(make_pair(make_pair(i - 1, j), make_pair(i, j)));
       // Снизу
       if (i < r - 1 && places[i + 1][j] == 'o' &&
-          find(res.begin(), res.end(), make_pair(make_pair(i + 1, j), make_pair(i, j))) == res.end() &&
+          find(res.begin(), res.end(), make_pair(make_pair(i + 1, j), make_pair(i, j))) == res.end() && // Проверка на существование такой пары
           find(res.begin(), res.end(), make_pair(make_pair(i, j), make_pair(i + 1, j))) == res.end())
         res.push_back(make_pair(make_pair(i + 1, j), make_pair(i, j)));
       // Всё, что справа от места
       if (j < s - 1)
       {
         if (i > 0 && places[i - 1][j + 1] == 'o' &&
-            find(res.begin(), res.end(), make_pair(make_pair(i - 1, j + 1), make_pair(i, j))) == res.end() &&
+            find(res.begin(), res.end(), make_pair(make_pair(i - 1, j + 1), make_pair(i, j))) == res.end() && // Проверка на существование такой пары
             find(res.begin(), res.end(), make_pair(make_pair(i, j), make_pair(i - 1, j + 1))) == res.end())
           res.push_back(make_pair(make_pair(i - 1, j + 1), make_pair(i, j)));
         if (places[i][j + 1] == 'o' &&
-            find(res.begin(), res.end(), make_pair(make_pair(i, j + 1), make_pair(i, j))) == res.end() &&
+            find(res.begin(), res.end(), make_pair(make_pair(i, j + 1), make_pair(i, j))) == res.end() && // Проверка на существование такой пары
             find(res.begin(), res.end(), make_pair(make_pair(i, j), make_pair(i, j + 1))) == res.end())
           res.push_back(make_pair(make_pair(i, j + 1), make_pair(i, j)));
         if (i < r - 1 && places[i + 1][j + 1] == 'o' &&
-            find(res.begin(), res.end(), make_pair(make_pair(i + 1, j + 1), make_pair(i, j))) == res.end() &&
+            find(res.begin(), res.end(), make_pair(make_pair(i + 1, j + 1), make_pair(i, j))) == res.end() && // Проверка на существование такой пары
             find(res.begin(), res.end(), make_pair(make_pair(i, j), make_pair(i + 1, j + 1))) == res.end())
           res.push_back(make_pair(make_pair(i + 1, j + 1), make_pair(i, j)));
       }
