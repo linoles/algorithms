@@ -11,7 +11,6 @@ int main()
   scanf("%d %d", &xc, &yc);
   scanf("%d", &k);
 
-  // За каждый вектор он делает max(|dx|, |dy|) шагов, если шаг корректный
   ll ans = 0;
   for (int i = 0; i < k; i++)
   {
