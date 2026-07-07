@@ -36,22 +36,16 @@ vector<T, Alloc> counting_sort(vector<T, Alloc> nums)
 
   // Заполнение массива вхождений
   for (int x : nums)
-  {
     counts[x - min]++;
-  }
 
   // Окончательное заполнение
   for (int i = 1; i < range; i++)
-  {
     counts[i] += counts[i - 1];
-  }
 
   // Восстановление массива
   for (int i = size(nums) - 1; i >= 0; --i)
-  {
     res[counts[nums[i] - min] - 1] = nums[i];
     counts[nums[i] - min]--;
-  }
 
   return res;
 }

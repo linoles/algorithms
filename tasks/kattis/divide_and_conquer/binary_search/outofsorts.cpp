@@ -1,0 +1,53 @@
+#include <bits/stdc++.h>
+using namespace std;
+
+#define forn(i, n) for (int i = 0; i < n; i++)         // Перебор i...n
+#define forr(i, n) for (int i = n - 1; i >= 0; i--)    // Перебор с конца
+#define forab(i, a, b) for (int i = (a); i < (b); i++) // Перебор в диапазоне
+#define LSOne(S) ((S) & -(S))                          // Наименьший значащий бит
+#define PI acos(-1.0)                                  // Число pi
+#define all(x) (x).begin(), (x).end()                  // Итераторы 0...n
+
+typedef long long ll;
+typedef long double ld;
+typedef unsigned long long ull;
+typedef vector<int> vi;
+typedef vector<ll> vll;
+typedef pair<int, int> pii;
+
+// Kattis outofsorts, O(n * log n)
+int main()
+{
+  int n, m, a, c, x0;
+  scanf("%d %d %d %d %d", &n, &m, &a, &c, &x0);
+  vi x(n);
+  x[0] = ((ll)a * x0 + c) % m;
+  forab(i, 1, n) x[i] = ((ll)a * x[i - 1] + c) % m;
+
+  // Она точно не найдёт числа, которых нет в массиве :)
+  int ans = 0;
+  forn(i, n)
+  {
+    // Проверяем, могла ли Ann найти число x[i + 1]
+    int lo = 0, hi = n - 1;
+    while (lo <= hi)
+    {
+      int mid = (lo + hi) / 2;
+      if (x[mid] == x[i])
+      {
+        ans++;
+        break;
+      }
+      else if (x[mid] < x[i])
+        lo = mid + 1;
+      else
+        hi = mid - 1;
+    }
+  }
+
+  printf("%d\n", ans);
+
+  return 0;
+}
+
+// Простая симуляции действий Ann
