@@ -1,6 +1,6 @@
-#include <iostream>
+
 #include <bits/stdc++.h>
-#include <cmath>
+
 using namespace std;
 
 // Codeforces 2020A (800) - Минимальное число операций, O(log n  по осн. k)

@@ -1,6 +1,6 @@
 #include <bits/stdc++.h>
-#include <vector>
-#include <algorithm> // next_permutation
+
+ // next_permutation
 using namespace std;
 typedef vector<tuple<int, int, int>> vti;
 

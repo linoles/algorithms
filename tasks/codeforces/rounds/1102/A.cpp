@@ -1,5 +1,5 @@
 #include <bits/stdc++.h>
-#include <iostream>
+
 using namespace std;
 
 // Codeforces Round 1102 A - Евклид, последовательность, два числа, O(n * log n)

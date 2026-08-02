@@ -1,6 +1,6 @@
-#include <iostream>
+
 #include <bits/stdc++.h>
-#include <cmath>
+
 using namespace std;
 
 // Codeforces 1986A (800) - Ось X, O(n)

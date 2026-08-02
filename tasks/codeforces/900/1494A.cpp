@@ -1,8 +1,8 @@
-#include <iostream>
+
 #include <bits/stdc++.h>
-#include <algorithm>
-#include <stack>
-#include <cstring>
+
+
+
 using namespace std;
 
 // Codeforces 1494A (900) - Строка ABC, итераций t * 8 * (3n + n + n) = 40 * t * n  =>  O(n) на каждый тест
